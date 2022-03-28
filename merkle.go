@@ -121,7 +121,7 @@ func generateLeaves(inputData [][]byte, wp *workerPool) ([]*Node, error) {
 
 	if inputDataSize > 1 {
 		// Find the nearest power of 2 for the base leaf level size
-		leafLevelSize = nearestPowerOf2(len(inputData))
+		leafLevelSize = nextNearestPowerOf2(len(inputData))
 	}
 
 	leaves := make([]*Node, leafLevelSize)
@@ -167,11 +167,11 @@ func generateLeaves(inputData [][]byte, wp *workerPool) ([]*Node, error) {
 	return leaves, nil
 }
 
-// nearestPowerOf2 returns the nearest power of 2 to
-// the provided number.
+// nextNearestPowerOf2 returns the nearest power of 2 to
+// the provided number (or the number itself if it was a power of 2).
 // Courtesy of BitTwiddlingHacks:
 // https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
-func nearestPowerOf2(num int) int {
+func nextNearestPowerOf2(num int) int {
 	num--
 	num |= num >> 1
 	num |= num >> 2
