@@ -13,7 +13,7 @@ var (
 // GenerateMerkleTree generates a Merkle tree based on the input data
 func GenerateMerkleTree(inputData [][]byte) (*MerkleTree, error) {
 	// Check if the data set is valid
-	if !isValidDataSet(inputData) {
+	if len(inputData) < 1 {
 		return nil, errEmptyDataSet
 	}
 
@@ -89,11 +89,6 @@ func GenerateMerkleTree(inputData [][]byte) (*MerkleTree, error) {
 	return &MerkleTree{
 		Root: nodes[0],
 	}, nil
-}
-
-// isValidDataSet makes sure the input set has elements
-func isValidDataSet(inputData [][]byte) bool {
-	return inputData != nil && len(inputData) > 0
 }
 
 // shiftAndShrinkArray shifts every other node to the
