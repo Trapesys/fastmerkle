@@ -148,7 +148,7 @@ func generateLeaves(inputData [][]byte, wp *workerPool) ([]*Node, error) {
 		}
 
 		// Save the leaf nodes
-		leaves[i] = &Node{
+		leaves[result.storeIndex] = &Node{
 			Hash:   result.hashData,
 			Left:   nil,
 			Right:  nil,
