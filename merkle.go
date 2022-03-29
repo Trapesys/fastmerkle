@@ -34,9 +34,12 @@ func GenerateMerkleTree(inputData [][]byte) (*MerkleTree, error) {
 	// While the root is not derived, create new hashing jobs
 	// for the worker pool
 	for len(nodes) > 1 {
+		// Make sure the input node array for the level is even
+		tryDuplicate(&nodes)
+
 		// A hashing job is just hashing two subsequent
 		// siblings in the tree. Since the tree is a perfect
-		// Merkle tree, the node array will always be a power of 2
+		// Merkle tree, the node array for the level will always be even
 		for i := 0; i < len(nodes); i += 2 {
 			workerPool.addJob(&workerJob{
 				storeIndex: i,
@@ -117,14 +120,7 @@ func shiftAndShrinkArray(nodes *[]*Node) {
 // to be a perfect binary tree
 func generateLeaves(inputData [][]byte, wp *workerPool) ([]*Node, error) {
 	inputDataSize := len(inputData)
-	leafLevelSize := inputDataSize
-
-	if inputDataSize > 1 {
-		// Find the nearest power of 2 for the base leaf level size
-		leafLevelSize = nextNearestPowerOf2(len(inputData))
-	}
-
-	leaves := make([]*Node, leafLevelSize)
+	leaves := make([]*Node, inputDataSize)
 
 	// Create the initial job set for the leaf nodes,
 	// where each job is a single leaf node to be processed
@@ -156,29 +152,20 @@ func generateLeaves(inputData [][]byte, wp *workerPool) ([]*Node, error) {
 		}
 	}
 
-	// Since there is a possibility an expansion of the leaves array
-	// took place to make it a power of 2, the last element in the original leaf set
-	// needs to be duplicated to fill out the remaining (expanded) slots
-	lastNode := leaves[inputDataSize-1]
-	for i := inputDataSize; i < len(leaves); i++ {
-		leaves[i] = lastNode.duplicate()
-	}
-
 	return leaves, nil
 }
 
-// nextNearestPowerOf2 returns the nearest power of 2 to
-// the provided number (or the number itself if it was a power of 2).
-// Courtesy of BitTwiddlingHacks:
-// https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
-func nextNearestPowerOf2(num int) int {
-	num--
-	num |= num >> 1
-	num |= num >> 2
-	num |= num >> 4
-	num |= num >> 8
-	num |= num >> 16
-	num++
+// tryDuplicate checks if the input array is odd,
+// and if it is, duplicate the last element to make it even
+func tryDuplicate(nodes *[]*Node) {
+	if len(*nodes)%2 == 0 {
+		// The node array for the level is already even,
+		// no need to do further processing
+		return
+	}
 
-	return num
+	// Duplicate the last node in the level and
+	// append it
+	lastNode := (*nodes)[len(*nodes)-1]
+	*nodes = append(*nodes, lastNode.duplicate())
 }
