@@ -2,6 +2,8 @@ package fastmerkle
 
 import (
 	"crypto/rand"
+	"encoding/hex"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -64,4 +66,107 @@ func generateRandomData(count int) [][]byte {
 	}
 
 	return randomData
+}
+
+// generateInputSet generates an input set from the
+// fixed random data
+func generateInputSet(count int) [][]byte {
+	if count < 1 {
+		return nil
+	}
+
+	inputSet := [][]byte{
+		[]byte("Lazar"),
+		[]byte("Vuksan"),
+		[]byte("Dusan"),
+		[]byte("Aleksa"),
+		[]byte("Yoshiki"),
+		[]byte("Milos"),
+	}
+
+	if count > len(inputSet) {
+		count = len(inputSet)
+	}
+
+	return inputSet[:count]
+}
+
+// getHexBytes converts an input string to bytes
+func getHexBytes(t *testing.T, input string) []byte {
+	hexBytes, err := hex.DecodeString(input)
+	if err != nil {
+		t.Fatalf("Unable to decode hex, %v", err)
+	}
+
+	return hexBytes
+}
+
+// TestGenerateMerkleTree test Merkle tree generation logic
+func TestGenerateMerkleTree(t *testing.T) {
+	testTable := []struct {
+		name          string
+		inputElements [][]byte
+		expectedRoot  []byte
+		expectedError error
+	}{
+		{
+			"no input data provided",
+			nil,
+			nil,
+			errEmptyDataSet,
+		},
+		{
+			"single element input data",
+			generateInputSet(1),
+			getHexBytes(
+				t,
+				"8f84d17b50679b0b53c61b03b39eff57e0e50b6cd73294a8ec1afc3472025b98",
+			),
+			nil,
+		},
+		{
+			"input data set is power of 2",
+			generateInputSet(2),
+			getHexBytes(
+				t,
+				"2997f58b4810eb8d4e779f69e51ab80dc85d1a962a5036d02b21f485e1557c35",
+			),
+			nil,
+		},
+		{
+			"input data set is not a power of 2 (even)",
+			generateInputSet(6),
+			getHexBytes(
+				t,
+				"de0aa53f3e453e031fc92844aa1845f29b69909f6123fed4b047bc253174a497",
+			),
+			nil,
+		},
+	}
+
+	for _, testCase := range testTable {
+		t.Run(testCase.name, func(t *testing.T) {
+			// Generate the Merkle tree
+			merkleTree, genErr := GenerateMerkleTree(testCase.inputElements)
+
+			// Check the errors
+			if testCase.expectedError != nil {
+				// Make sure the error is correct
+				assert.ErrorIs(t, genErr, testCase.expectedError)
+
+				// Make sure the Merkle tree has not been generated
+				assert.Nil(t, merkleTree)
+			} else {
+				// Make sure no error occurred
+				assert.NoError(t, genErr)
+
+				if merkleTree == nil || merkleTree.Root == nil {
+					t.Fatalf("Merkle tree is not initialized")
+				}
+
+				// Make sure the Merkle roots match
+				assert.Equal(t, testCase.expectedRoot, merkleTree.GetRootHash())
+			}
+		})
+	}
 }
