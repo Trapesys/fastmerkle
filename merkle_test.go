@@ -82,6 +82,7 @@ func generateInputSet(count int) [][]byte {
 		[]byte("Aleksa"),
 		[]byte("Yoshiki"),
 		[]byte("Milos"),
+		[]byte("Zeljko"),
 	}
 
 	if count > len(inputSet) {
