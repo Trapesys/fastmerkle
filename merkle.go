@@ -3,7 +3,6 @@ package fastmerkle
 import (
 	"errors"
 	"fmt"
-	"runtime"
 )
 
 var (
@@ -18,8 +17,7 @@ func GenerateMerkleTree(inputData [][]byte) (*MerkleTree, error) {
 	}
 
 	// Create the worker pool and put them on standby
-	workerPool := newWorkerPool(runtime.NumCPU())
-	workerPool.startWorkerPool()
+	workerPool := newWorkerPool(len(inputData) + 1)
 
 	defer workerPool.close()
 
