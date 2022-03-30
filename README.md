@@ -39,6 +39,35 @@ var merkleRootHash []byte
 merkleRootHash = merkleTree.GetRootHash()
 ```
 
+### Benchmarks
+```bash
+goos: linux
+goarch: amd64
+pkg: github.com/Trapesys/fastmerkle
+cpu: Intel(R) Xeon(R) Platinum 8275CL CPU @ 3.00GHz
+BenchmarkGenerateMerkleTree5-16          	   41623	     28551 ns/op
+BenchmarkGenerateMerkleTree50-16         	    6805	    180395 ns/op
+BenchmarkGenerateMerkleTree500-16        	     944	   1289450 ns/op
+BenchmarkGenerateMerkleTree1000-16       	     492	   2432432 ns/op
+BenchmarkGenerateMerkleTree10000-16      	      52	  23390035 ns/op
+BenchmarkGenerateMerkleTree1000000-16    	       1	2165074507 ns/op
+PASS
+ok  	github.com/Trapesys/fastmerkle	8.942s
+```
+
+```bash
+// Averaged over 10 runs
+
+[Num. elements in input set]: [Merkle Tree generation time in s]
+
+10: 		0.000059s
+100: 		0.000316s
+1000: 		0.001772s
+10000: 		0.015542s
+100000: 	0.131613s
+1000000: 	1.308881s
+```
+
 ---
 
 Copyright 2022 Trapesys
