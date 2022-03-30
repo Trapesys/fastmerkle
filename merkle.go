@@ -152,6 +152,9 @@ func generateLeaves(inputData [][]byte, wp *workerPool) ([]*Node, error) {
 		}
 	}
 
+	// Make sure the node array for the level is even
+	tryDuplicate(&leaves)
+
 	return leaves, nil
 }
 

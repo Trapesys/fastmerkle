@@ -121,7 +121,7 @@ func TestGenerateMerkleTree(t *testing.T) {
 			generateInputSet(1),
 			getHexBytes(
 				t,
-				"8f84d17b50679b0b53c61b03b39eff57e0e50b6cd73294a8ec1afc3472025b98",
+				"6c4cc993464af6cca9101c82d9a5733d6b8453726834f7fd9b1e7a6104915065",
 			),
 			nil,
 		},
