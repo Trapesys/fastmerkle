@@ -40,6 +40,7 @@ merkleRootHash = merkleTree.GetRootHash()
 ```
 
 ### Benchmarks
+
 ```bash
 goos: linux
 goarch: amd64
@@ -60,12 +61,12 @@ ok  	github.com/Trapesys/fastmerkle	8.942s
 
 [Num. elements in input set]: [Merkle Tree generation time in s]
 
-10: 		0.000059s
-100: 		0.000316s
-1000: 		0.001772s
-10000: 		0.015542s
-100000: 	0.131613s
-1000000: 	1.308881s
+10:         0.000059s
+100:        0.000316s
+1000:       0.001772s
+10000:      0.015542s
+100000:     0.131613s
+1000000:    1.308881s
 ```
 
 ---
