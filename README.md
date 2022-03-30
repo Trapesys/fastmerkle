@@ -4,6 +4,10 @@
 the supported hashing strategy is _Keccak256_. The tree generation handles uneven data sets by duplicating the last
 element on the tree level.
 
+![GitHub](https://img.shields.io/github/license/Trapesys/fastmerkle)
+![GitHub branch checks state](https://img.shields.io/github/checks-status/Trapesys/fastmerkle/main)
+![GitHub all releases](https://img.shields.io/github/downloads/Trapesys/fastmerkle/total)
+
 ## Quick Start 📝
 
 The overall API footprint of the package is relatively small.
