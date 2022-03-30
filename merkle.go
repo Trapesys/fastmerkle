@@ -34,7 +34,7 @@ func GenerateMerkleTree(inputData [][]byte) (*MerkleTree, error) {
 	// for the worker pool
 	for len(nodes) > 1 {
 		// Make sure the input node array for the level is even
-		tryDuplicate(&nodes)
+		nodes = adjustLevelSize(nodes)
 
 		// A hashing job is just hashing two subsequent
 		// siblings in the tree. Since the tree is a perfect
@@ -148,22 +148,20 @@ func generateLeaves(inputData [][]byte, wp *workerPool) ([]*Node, error) {
 	}
 
 	// Make sure the node array for the level is even
-	tryDuplicate(&leaves)
-
-	return leaves, nil
+	return adjustLevelSize(leaves), nil
 }
 
-// tryDuplicate checks if the input array is odd,
-// and if it is, duplicate the last element to make it even
-func tryDuplicate(nodes *[]*Node) {
-	if len(*nodes)%2 == 0 {
+// adjustLevelSize checks if the input array is odd,
+// and if it is, duplicates the last element to make it even
+func adjustLevelSize(nodes []*Node) []*Node {
+	if len(nodes)%2 == 0 {
 		// The node array for the level is already even,
 		// no need to do further processing
-		return
+		return nodes
 	}
 
-	// Duplicate the last node in the level and
-	// append it
-	lastNode := (*nodes)[len(*nodes)-1]
-	*nodes = append(*nodes, lastNode.duplicate())
+	// Duplicate the last node in the level and append it
+	lastNode := nodes[len(nodes)-1]
+
+	return append(nodes, lastNode.duplicate())
 }
