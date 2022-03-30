@@ -103,6 +103,8 @@ func parseJobs(
 		releaseFastHasher(hasher)
 
 		// Report the result back
-		resultsCh <- result
+		go func(result *workerResult) {
+			resultsCh <- result
+		}(result)
 	}
 }
