@@ -85,7 +85,7 @@ func GenerateMerkleTree(inputData [][]byte) (*MerkleTree, error) {
 
 		// Now that results are gathered for the level,
 		// the array can be shifted and shrunk
-		shiftAndShrinkArray(&nodes)
+		nodes = packLevelResults(nodes)
 	}
 
 	return &MerkleTree{
@@ -93,26 +93,22 @@ func GenerateMerkleTree(inputData [][]byte) (*MerkleTree, error) {
 	}, nil
 }
 
-// shiftAndShrinkArray shifts every other node to the
+// packLevelResults shifts every other node to the
 // beginning of the array, and discards half of it (shrinks it).
 // Due to the way results are being stored (index of left child),
 // and the fact that the Merkle tree is a perfect binary tree,
 // it can be guaranteed that the results are on every other index in the node level array
-func shiftAndShrinkArray(nodes *[]*Node) {
+func packLevelResults(nodes []*Node) []*Node {
 	// Put the results in the first half of the array.
-	// One counter keeps track of the next slot to place the value (moves by 1) (saveIndx)
-	// and the other keeps track of which element should be stored (moves by 2) (resultIndx)
-	initialLevelSize := len(*nodes)
-	saveIndx := 0
-
-	for resultIndx := 0; resultIndx < initialLevelSize; resultIndx += 2 {
-		(*nodes)[saveIndx] = (*nodes)[resultIndx]
-		saveIndx++
+	// One counter keeps track of the next slot to place the value (moves by 1)
+	// and the other keeps track of which element should be stored (moves by 2)
+	for i := 0; i < len(nodes)/2; i++ {
+		nodes[i] = nodes[2*i]
 	}
 
 	// Wipe the other half of the array, since
 	// all useful and needed results are in the first half
-	*nodes = (*nodes)[:initialLevelSize/2]
+	return nodes[:len(nodes)/2]
 }
 
 // generateLeaves generates the initial (leaf) level of the Merkle tree.
