@@ -62,7 +62,7 @@ func generateRandomData(count int) [][]byte {
 	for i := 0; i < count; i++ {
 		data := make([]byte, 32)
 		_, _ = rand.Read(data)
-		randomData = append(randomData, data)
+		randomData[i] = data
 	}
 
 	return randomData
@@ -94,6 +94,8 @@ func generateInputSet(count int) [][]byte {
 
 // getHexBytes converts an input string to bytes
 func getHexBytes(t *testing.T, input string) []byte {
+	t.Helper()
+
 	hexBytes, err := hex.DecodeString(input)
 	if err != nil {
 		t.Fatalf("Unable to decode hex, %v", err)

@@ -36,7 +36,12 @@ var fastHasherPool = sync.Pool{
 // acquireFastHasher acquires a new instance of the hasher
 // from the hasher pool. Must be coupled with an adequate release call
 func acquireFastHasher() *fastHasher {
-	return fastHasherPool.Get().(*fastHasher)
+	fh, ok := fastHasherPool.Get().(*fastHasher)
+	if !ok {
+		return nil
+	}
+
+	return fh
 }
 
 // releaseFastHasher resets a hasher instance and puts it back

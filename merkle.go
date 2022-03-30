@@ -20,6 +20,7 @@ func GenerateMerkleTree(inputData [][]byte) (*MerkleTree, error) {
 	// Create the worker pool and put them on standby
 	workerPool := newWorkerPool(runtime.NumCPU())
 	workerPool.startWorkerPool()
+
 	defer workerPool.close()
 
 	// Generate the leaves of the Merkle tree
@@ -105,6 +106,7 @@ func shiftAndShrinkArray(nodes *[]*Node) {
 	// and the other keeps track of which element should be stored (moves by 2) (resultIndx)
 	initialLevelSize := len(*nodes)
 	saveIndx := 0
+
 	for resultIndx := 0; resultIndx < initialLevelSize; resultIndx += 2 {
 		(*nodes)[saveIndx] = (*nodes)[resultIndx]
 		saveIndx++
