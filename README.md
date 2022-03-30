@@ -4,9 +4,19 @@
 the supported hashing strategy is _Keccak256_. The tree generation handles uneven data sets by duplicating the last
 element on the tree level.
 
-## Usage 📝
+## Quick Start 📝
 
 The overall API footprint of the package is relatively small.
+
+### Package Install
+
+To install the `fastmerkle` package, run:
+
+```bash
+go get github.com/Trapesys/fastmerkle
+````
+
+### Generate Merkle Tree
 
 ```go
 // Arbitrary random data used to construct the tree
@@ -20,7 +30,7 @@ if createErr != nil {
 ...
 }
 
-// Get the Merkle root
+// Get the Merkle root hash
 var merkleRootHash []byte
 merkleRootHash = merkleTree.GetRootHash()
 ```
