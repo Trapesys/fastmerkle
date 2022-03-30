@@ -119,22 +119,21 @@ func shiftAndShrinkArray(nodes *[]*Node) {
 // The leaf level needs to be a power of 2, since the Merkle tree is considered
 // to be a perfect binary tree
 func generateLeaves(inputData [][]byte, wp *workerPool) ([]*Node, error) {
-	inputDataSize := len(inputData)
-	leaves := make([]*Node, inputDataSize)
+	leaves := make([]*Node, len(inputData))
 
 	// Create the initial job set for the leaf nodes,
 	// where each job is a single leaf node to be processed
-	for i := 0; i < inputDataSize; i++ {
+	for i, input := range inputData {
 		wp.addJob(&workerJob{
 			storeIndex: i,
 			sourceData: [][]byte{
-				inputData[i],
+				input,
 			},
 		})
 	}
 
 	// Grab the results from the worker pool
-	for i := 0; i < inputDataSize; i++ {
+	for range inputData {
 		result := wp.getResult()
 		if result.error != nil {
 			return nil, fmt.Errorf(
