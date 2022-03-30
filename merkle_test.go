@@ -163,7 +163,7 @@ func TestGenerateMerkleTree(t *testing.T) {
 				// Make sure no error occurred
 				assert.NoError(t, genErr)
 
-				if merkleTree == nil || merkleTree.Root == nil {
+				if merkleTree == nil || merkleTree.root == nil {
 					t.Fatalf("Merkle tree is not initialized")
 				}
 

@@ -43,8 +43,8 @@ func GenerateMerkleTree(inputData [][]byte) (*MerkleTree, error) {
 			workerPool.addJob(&workerJob{
 				storeIndex: i,
 				sourceData: [][]byte{
-					nodes[i].Hash,
-					nodes[i+1].Hash,
+					nodes[i].hash,
+					nodes[i+1].hash,
 				},
 			})
 		}
@@ -65,16 +65,16 @@ func GenerateMerkleTree(inputData [][]byte) (*MerkleTree, error) {
 			// Create a placeholder for the parent node
 			parent := &Node{
 				// Save the hashing data of the 2 children
-				Hash: result.hashData,
+				hash: result.hashData,
 				// Save a reference to the left child
-				Left: nodes[result.storeIndex],
+				left: nodes[result.storeIndex],
 				// Save a reference to the right child
-				Right: nodes[result.storeIndex+1],
+				right: nodes[result.storeIndex+1],
 			}
 
 			// Save the parent reference with the children
-			nodes[result.storeIndex].Parent = parent
-			nodes[result.storeIndex+1].Parent = parent
+			nodes[result.storeIndex].parent = parent
+			nodes[result.storeIndex+1].parent = parent
 
 			// Overwrite the left child's slot in the array,
 			// since it's no longer needed. The right child
@@ -89,7 +89,7 @@ func GenerateMerkleTree(inputData [][]byte) (*MerkleTree, error) {
 	}
 
 	return &MerkleTree{
-		Root: nodes[0],
+		root: nodes[0],
 	}, nil
 }
 
@@ -140,10 +140,10 @@ func generateLeaves(inputData [][]byte, wp *workerPool) ([]*Node, error) {
 
 		// Save the leaf nodes
 		leaves[result.storeIndex] = &Node{
-			Hash:   result.hashData,
-			Left:   nil,
-			Right:  nil,
-			Parent: nil,
+			hash:   result.hashData,
+			left:   nil,
+			right:  nil,
+			parent: nil,
 		}
 	}
 
