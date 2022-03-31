@@ -168,7 +168,7 @@ func TestGenerateMerkleTree(t *testing.T) {
 				}
 
 				// Make sure the Merkle roots match
-				assert.Equal(t, testCase.expectedRoot, merkleTree.GetRootHash())
+				assert.Equal(t, testCase.expectedRoot, merkleTree.RootHash())
 			}
 		})
 	}

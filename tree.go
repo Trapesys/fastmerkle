@@ -20,8 +20,8 @@ func (n *Node) duplicate() *Node {
 	}
 }
 
-// GetHash returns the hash of the node's children
-func (n *Node) GetHash() []byte {
+// Hash returns the hash of the node's children
+func (n *Node) Hash() []byte {
 	return n.hash
 }
 
@@ -30,12 +30,12 @@ type MerkleTree struct {
 	root *Node // The root of the Merkle binary tree
 }
 
-// GetRoot returns the root of the Merkle tree
-func (m *MerkleTree) GetRoot() *Node {
+// Root returns the root of the Merkle tree
+func (m *MerkleTree) Root() *Node {
 	return m.root
 }
 
-// GetRootHash returns the root hash fo the Merkle tree
-func (m *MerkleTree) GetRootHash() []byte {
-	return m.root.GetHash()
+// RootHash returns the root hash fo the Merkle tree
+func (m *MerkleTree) RootHash() []byte {
+	return m.root.Hash()
 }

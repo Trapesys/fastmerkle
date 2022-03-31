@@ -10,29 +10,6 @@ type workerPool struct {
 	resultsCh chan *workerResult // The channel to relay results to
 }
 
-// newWorkerPool spawns a new worker pool
-func newWorkerPool(expectedNumResults int) *workerPool {
-	return &workerPool{
-		resultsCh: make(chan *workerResult, expectedNumResults),
-	}
-}
-
-// addJob adds a new job asynchronously to be processed by the worker pool
-func (wp *workerPool) addJob(job *workerJob) {
-	go parseJobs(job, wp.resultsCh)
-}
-
-// getResult takes out a result from the worker pool [Blocking]
-func (wp *workerPool) getResult() *workerResult {
-	return <-wp.resultsCh
-}
-
-// close closes the worker pool and their corresponding
-// channels
-func (wp *workerPool) close() {
-	close(wp.resultsCh)
-}
-
 // workerJob is a single hashing job performed
 // by the worker thread
 type workerJob struct {
@@ -47,14 +24,36 @@ type workerResult struct {
 	error      error  // any kind of error that occurred during hashing
 }
 
-// parseJobs is the main activity method for the
+// newWorkerPool spawns a new worker pool
+func newWorkerPool(expectedNumResults int) *workerPool {
+	return &workerPool{
+		resultsCh: make(chan *workerResult, expectedNumResults),
+	}
+}
+
+// addJob adds a new job asynchronously to be processed by the worker pool
+func (wp *workerPool) addJob(job *workerJob) {
+	go wp.runJob(job)
+}
+
+// getResult takes out a result from the worker pool [Blocking]
+func (wp *workerPool) getResult() *workerResult {
+	return <-wp.resultsCh
+}
+
+// close closes the worker pool and their corresponding
+// channels
+func (wp *workerPool) close() {
+	close(wp.resultsCh)
+}
+
+// runJob is the main activity method for the
 // worker threads, there new jobs are parsed and results sent out
-func parseJobs(
-	job *workerJob,
-	resultsCh chan<- *workerResult,
-) {
+func (wp *workerPool) runJob(job *workerJob) {
 	// Grab an instance of the fast hasher
 	hasher := acquireFastHasher()
+	// Release the hasher when it's no longer needed
+	defer releaseFastHasher(hasher)
 
 	// Concatenate all items that need to be hashed together
 	preparedArray := make([]byte, 0)
@@ -63,11 +62,11 @@ func parseJobs(
 	}
 
 	// Hash the items in the job
-	var err error
-	if writeErr := hasher.addToHash(preparedArray); writeErr != nil {
+	err := hasher.addToHash(preparedArray)
+	if err != nil {
 		err = fmt.Errorf(
 			"unable to write hash, %w",
-			writeErr,
+			err,
 		)
 	}
 
@@ -78,9 +77,6 @@ func parseJobs(
 		error:      err,
 	}
 
-	// Release the hasher as it's no longer needed
-	releaseFastHasher(hasher)
-
 	// Report the result back
-	resultsCh <- result
+	wp.resultsCh <- result
 }
