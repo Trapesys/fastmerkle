@@ -57,9 +57,8 @@ ok  	github.com/Trapesys/fastmerkle	8.942s
 ```
 
 ```bash
-// Averaged over 10 runs
-
-[Num. elements in input set]: [Merkle Tree generation time in s]
+# Averaged over 10 runs
+# [Num. elements in input set]: [Merkle Tree generation time in s]
 
 10:         0.000059s
 100:        0.000316s
